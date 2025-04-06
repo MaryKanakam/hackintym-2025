@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🪓  DIY Matcher</title>
+  <style>
+    @import url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: #c2f0c2 url(https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #3b3b3b;
+      padding: 20px;
+      image-rendering: pixelated;
+    }
+
+    h1 {
+      color: #228B22;
+      background: #8B4513;
+      padding: 12px;
+      border: 4px solid #654321;
+      display: inline-block;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: 'Press Start 2P', cursive;
+      background: #f0e6d2;
+      border: 3px solid #654321;
+      box-shadow: inset 2px 2px #aaa;
+    }
+
+    button {
+      font-family: 'Press Start 2P', cursive;
+      padding: 10px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: 4px solid #2f4f2f;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .idea {
+      background: #f4ffe2;
+      border: 4px solid #8b8b8b;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 0;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    ul {
+      padding-left: 20px;
+      font-size: 10px;
+    }
+
+    .material {
+      margin-left: 20px;
+    }
+
+    ::selection {
+      background: #228B22;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🪓 DIY Project Matcher </h1>
+
+<p>🧱 Enter your materials (comma-separated):</p>
+<input type="text" id="materialsInput" placeholder="e.g. cobblestone, stick, wool">
+<button onclick="suggestDIYProjects()">🔍 Match Projects</button>
+
+<div id="results"></div>
+
+<script>
+  const diyIdeas = [
+    {
+      title: "Bottle Vase",
+      keywords: ["bottle", "twine", "paint", "scissors", "glue"],
+      description: "Turn a plastic bottle into a Minecraft-style decorative vase!"
+    },
+    {
+      title: "Cardboard Sword Display",
+      keywords: ["cardboard", "scissors", "glue", "foil"],
+      description: "Make a wall-hanging cardboard sword inspired by Minecraft!"
+    },
+    {
+      title: "Pixel Painting",
+      keywords: ["paper", "paint", "pencil", "ruler"],
+      description: "Design a Minecraft pixel-art painting using paper and paint."
+    }
+  ];
+
+  const sellMarket = [
+    { name: "Craft Glue", desc: "Strong adhesive perfect for builds", price: "₹30" },
+    { name: "Pixel Art Paper Pack", desc: "Grid paper for pixel design", price: "₹20" },
+    { name: "Upcycled Bottles", desc: "Perfect for bottle-based DIYs", price: "₹10" }
+  ];
+
+  function suggestDIYProjects() {
+    const userInput = document.getElementById("materialsInput").value.toLowerCase();
+    const userMaterials = userInput.split(',').map(item => item.trim());
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    let matchFound = false;
+
+    diyIdeas.forEach(idea => {
+      const matched = idea.keywords.some(kw => userMaterials.includes(kw));
+      if (matched) {
+        matchFound = true;
+        let html = `<div class="idea"><h3>🛠️ ${idea.title}</h3>`;
+        html += `<p>📖 ${idea.description}</p><p>🧰 Needed Materials:</p><ul>`;
+        idea.keywords.forEach(mat => {
+          if (userMaterials.includes(mat)) {
+            html += `<li class="material">✅ ${mat} (you have this!)</li>`;
+          } else {
+            html += `<li class="material">❌ ${mat} (check Sell!)<br>${findSellMaterial(mat)}</li>`;
+          }
+        });
+        html += `</ul></div>`;
+        resultsDiv.innerHTML += html;
+      }
+    });
+
+    if (!matchFound) {
+      resultsDiv.innerHTML = "<p>🙁 No matching Minecraft DIY found. Try other blocks!</p>";
+    }
+  }
+
+  function findSellMaterial(keyword) {
+    const matches = sellMarket.filter(item =>
+      item.name.toLowerCase().includes(keyword) || item.desc.toLowerCase().includes(keyword)
+    );
+
+    if (matches.length === 0) {
+      return `🚫 No villagers selling "${keyword}" right now.`;
+    }
+
+    return matches.map(item => `🛒 ${item.name} — ${item.price}<br>📌 ${item.desc}`).join("<br>");
+  }
+</script>
+
+</body>
+</html>

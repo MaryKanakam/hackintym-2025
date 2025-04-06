@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌐 Reloop Community Centre</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #f0f4f1;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      max-width: 500px;
+      width: 100%;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+    }
+
+    .post {
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #e8f5e9;
+    }
+
+    .post p {
+      margin: 0.3rem 0;
+    }
+
+    .like-btn {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .like-btn:hover {
+      background-color: #388e3c;
+    }
+
+    .form-group {
+      margin-top: 2rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    .no-posts {
+      text-align: center;
+      color: #888;
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 Reloop Community Centre</h1>
+    
+    <div id="postsContainer"></div>
+    
+    <div class="form-group">
+      <h3>📣 Share Your Eco-Idea!</h3>
+      <input type="text" id="userName" placeholder="Your Name" required />
+      <textarea id="userIdea" rows="3" placeholder="Describe your eco-friendly idea..." required></textarea>
+      <button onclick="shareIdea()">Share</button>
+    </div>
+  </div>
+
+  <script>
+    let communityPosts = [
+      { user: "Asha", idea: "Used an old sari to make tote bags!", likes: 3 },
+      { user: "Ravi", idea: "Turned plastic bottles into bird feeders 🐦", likes: 5 },
+      { user: "Meena", idea: "Organized a beach cleanup with friends!", likes: 7 }
+    ];
+
+    function renderPosts() {
+      const container = document.getElementById('postsContainer');
+      container.innerHTML = "";
+
+      if (communityPosts.length === 0) {
+        container.innerHTML = "<div class='no-posts'>📝 No ideas shared yet.</div>";
+        return;
+      }
+
+      communityPosts.forEach((post, index) => {
+        const div = document.createElement("div");
+        div.className = "post";
+        div.innerHTML = `
+          <p><strong>${post.user}</strong> says:</p>
+          <p>💡 ${post.idea}</p>
+          <p>❤️ ${post.likes} likes</p>
+          <button class="like-btn" onclick="likePost(${index})">Like</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function shareIdea() {
+      const name = document.getElementById("userName").value.trim();
+      const idea = document.getElementById("userIdea").value.trim();
+
+      if (!name || !idea) {
+        alert("Please fill out both fields!");
+        return;
+      }
+
+      communityPosts.push({ user: name, idea: idea, likes: 0 });
+      document.getElementById("userName").value = "";
+      document.getElementById("userIdea").value = "";
+      renderPosts();
+    }
+
+    function likePost(index) {
+      communityPosts[index].likes++;
+      renderPosts();
+    }
+
+    renderPosts();
+  </script>
+</body>
+</html>

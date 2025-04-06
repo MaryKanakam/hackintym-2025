@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🟩 Mystery Trade Center - Minecraft Edition</title>
+  <link href="https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') repeat; /* Minecraft grass block pattern */
+      color: #2c3e50;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #27ae60;
+      text-align: center;
+      font-size: 16px;
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border: 3px double #4CAF50;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 4px solid #7da87b;
+      box-shadow: 0 0 5px #222;
+      border-radius: 0;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      margin-top: 10px;
+      padding: 8px;
+      background: #f2f2f2;
+      border: 2px solid #7da87b;
+      outline: none;
+    }
+
+    button {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      margin-top: 10px;
+      background-color: #4CAF50;
+      border: 2px solid #2e7d32;
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2e7d32;
+    }
+
+    .message {
+      margin-top: 10px;
+      background-color: #e8fce8;
+      border: 2px solid #4CAF50;
+      padding: 15px;
+      font-size: 10px;
+    }
+
+    .trade-list {
+      margin-top: 10px;
+      padding-left: 20px;
+      font-size: 10px;
+    }
+
+    .trade-list li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🟫 MYSTERY TRADE CENTER 🟩</h1>
+
+  <div class="section">
+    <h3>🎒 1. Offer an item to the genie</h3>
+    <input type="text" id="itemName" placeholder="📦 Item name">
+    <textarea id="itemMessage" placeholder="💬 Leave a message (optional)"></textarea>
+    <label>🌱 Is it eco-friendly?</label>
+    <select id="itemEco">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+    <button onclick="submitMysteryTrade()">🎁 Submit Trade</button>
+  <a href="home.html" class="btn">⬅️ Back to Home</a>
+
+    <div id="tradeResult" class="message"></div>
+  </div>
+
+  <div class="section">
+    <h3>📜 2. Your Past Mystery Trades</h3>
+    <ul id="pastTrades" class="trade-list"></ul>
+  </div>
+
+  <script>
+    const mysteryPool = [
+      { item: "🪵 Handmade paper notebook", eco: true },
+      { item: "🧪 Glass bottle art piece", eco: true },
+      { item: "🧸 Plastic toy dinosaur", eco: false },
+      { item: "👑 Painted egg carton crown", eco: true },
+      { item: "🎁 Mysterious wrapped package", eco: false },
+      { item: "✏️ Plantable pencil set", eco: true },
+      { item: "🌱 Bag of mystery seeds", eco: true },
+      { item: "🕹️ Broken remote control", eco: false }
+    ];
+
+    const userProfile = {
+      name: "Ilakiya",
+      points: 0,
+      mysteryTrades: []
+    };
+
+    function submitMysteryTrade() {
+      const name = document.getElementById("itemName").value.trim();
+      const msg = document.getElementById("itemMessage").value.trim();
+      const eco = document.getElementById("itemEco").value === "yes";
+      const resultDiv = document.getElementById("tradeResult");
+
+      if (!name) {
+        resultDiv.innerHTML = "⚠️ Please enter an item name.";
+        return;
+      }
+
+      const newItem = { item: name, eco: eco, message: msg };
+      mysteryPool.push(newItem);
+      resultDiv.innerHTML = "📦 Your item has entered the mystery pool...";
+
+      setTimeout(() => {
+        receiveMysteryItem(resultDiv);
+      }, 1000);
+    }
+
+    function receiveMysteryItem(resultDiv) {
+      const received = mysteryPool[Math.floor(Math.random() * mysteryPool.length)];
+
+      let html = `<br>✨ The genie has chosen something for you...<br><br>`;
+      html += `🧞‍♂️ You received: <strong>${received.item}</strong><br>`;
+
+      if (received.message) {
+        html += `💌 Message from sender: "${received.message}"<br>`;
+      }
+
+      const bonus = received.eco ? 10 : 3;
+      userProfile.points += bonus;
+      userProfile.mysteryTrades.push(received.item);
+
+      html += `<br>🎉 You earned ${bonus} points! Total: ${userProfile.points} pts`;
+      resultDiv.innerHTML = html;
+
+      updatePastTrades();
+    }
+
+    function updatePastTrades() {
+      const list = document.getElementById("pastTrades");
+      list.innerHTML = "";
+      userProfile.mysteryTrades.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = `🟩 ${index + 1}. ${item}`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>

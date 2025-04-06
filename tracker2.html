@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eco Profile – Reloop</title>
+  <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: 'Minecraftia', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .profile-card {
+      background-color: rgba(20, 20, 20, 0.9);
+      border: 4px solid #00ff88;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ff88;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      font-size: 3rem;
+      margin: 1rem 0;
+      filter: drop-shadow(0 0 5px lime);
+    }
+
+    .progress-bar {
+      background-color: #222;
+      border: 2px solid #00ff88;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 20px;
+      margin: 1rem 0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #00ff88, #007744);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .stats {
+      text-align: left;
+      margin-top: 1rem;
+    }
+
+    .stats p {
+      margin: 4px 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    button {
+      font-family: 'Minecraftia', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      background-color: #00ff88;
+      color: black;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #00cc77;
+    }
+
+    .reset-btn {
+      background-color: #ff5555;
+      color: white;
+    }
+
+    .reset-btn:hover {
+      background-color: #cc0000;
+    }
+
+    .level-info {
+      font-size: 0.9rem;
+      color: #00ff88;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <h2>🌍 Ilakiya's Eco Profile</h2>
+    <div class="badge" id="badgeIcon">🪨</div>
+    <div><strong id="badgeName">Gravel</strong> Badge</div>
+    <div class="level-info" id="levelInfo"></div>
+    <div class="progress-bar">
+      <div class="progress" id="progressBar"></div>
+    </div>
+    <p>Total Points: <span id="totalPoints">0</span></p>
+
+    <div class="stats">
+      <p>♻️ Recycled: <span id="recycledCount">0</span></p>
+      <p>🎁 Donated: <span id="donatedCount">0</span></p>
+      <p>🛒 Bought: <span id="boughtCount">0</span></p>
+      <p>🪄 Repurposed: <span id="repurposedCount">0</span></p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button onclick="addAction('recycled')">+ Recycled</button>
+    <button onclick="addAction('donated')">+ Donated</button>
+    <button onclick="addAction('bought')">+ Bought</button>
+    <button onclick="addAction('repurposed')">+ Repurposed</button>
+    <button class="reset-btn" onclick="resetAll()">Reset Progress</button>
+  </div>
+
+  <script>
+    const actionPoints = {
+      recycled: 10,
+      donated: 15,
+      bought: 5,
+      repurposed: 20
+    };
+
+    const badges = [
+      { name: "Gravel", icon: "🪨", min: 0, max: 49 },
+      { name: "Wood", icon: "🪵", min: 50, max: 99 },
+      { name: "Iron", icon: "🔩", min: 100, max: 149 },
+      { name: "Diamond", icon: "💎", min: 150, max: 199 },
+      { name: "Emerald", icon: "💚", min: 200, max: 249 },
+      { name: "Netherite", icon: "🔥", min: 250, max: Infinity }
+    ];
+
+    let userData = JSON.parse(localStorage.getItem("ecoUser")) || {
+      recycled: 0,
+      donated: 0,
+      bought: 0,
+      repurposed: 0,
+    };
+
+    function calculatePoints() {
+      return (userData.recycled * actionPoints.recycled) +
+             (userData.donated * actionPoints.donated) +
+             (userData.bought * actionPoints.bought) +
+             (userData.repurposed * actionPoints.repurposed);
+    }
+
+    function getBadge(totalPoints) {
+      return badges.find(b => totalPoints >= b.min && totalPoints <= b.max);
+    }
+
+    function getNextLevelInfo(totalPoints) {
+      const current = getBadge(totalPoints);
+      const next = badges.find(b => b.min > totalPoints);
+      if (!next) return "🏆 Max Level Achieved!";
+      const pointsLeft = next.min - totalPoints;
+      return `Only ${pointsLeft} pts to reach ${next.name} badge!`;
+    }
+
+    function updateUI() {
+      const points = calculatePoints();
+      const badge = getBadge(points);
+
+      document.getElementById("recycledCount").innerText = userData.recycled;
+      document.getElementById("donatedCount").innerText = userData.donated;
+      document.getElementById("boughtCount").innerText = userData.bought;
+      document.getElementById("repurposedCount").innerText = userData.repurposed;
+
+      document.getElementById("totalPoints").innerText = points;
+      document.getElementById("badgeIcon").innerText = badge.icon;
+      document.getElementById("badgeName").innerText = badge.name;
+      document.getElementById("levelInfo").innerText = getNextLevelInfo(points);
+
+      const range = badge.max - badge.min + 1;
+      const inLevel = points - badge.min;
+      const percent = Math.min((inLevel / range) * 100, 100);
+      document.getElementById("progressBar").style.width = `${percent}%`;
+
+      localStorage.setItem("ecoUser", JSON.stringify(userData));
+    }
+
+    function addAction(type) {
+      if (userData[type] !== undefined) {
+        userData[type]++;
+        updateUI();
+      }
+    }
+
+    function resetAll() {
+      if (confirm("Reset all your eco progress?")) {
+        userData = {
+          recycled: 0,
+          donated: 0,
+          bought: 0,
+          repurposed: 0
+        };
+        updateUI();
+      }
+    }
+
+    updateUI();
+  </script>
+
+</body>
+</html>

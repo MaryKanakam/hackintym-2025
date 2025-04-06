@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📬 Reloop Postbox – Minecraft Edition</title>
+  <link href="https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-image: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 20px;
+      color: #2e7d32;
+      text-shadow: 1px 1px 1px #000;
+    }
+
+    h1, h2 {
+      color: #dcedc8;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #menu {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .button {
+      background-color: #4caf50;
+      color: white;
+      padding: 12px 20px;
+      margin: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .button:hover {
+      background-color: #388e3c;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 2px solid #a5d6a7;
+      font-family: 'Press Start 2P', cursive;
+      background-color: #f1f8e9;
+      font-size: 12px;
+    }
+
+    .letter {
+      background-color: rgba(232, 245, 233, 0.9);
+      border: 2px dashed #81c784;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 16px;
+    }
+
+    #content {
+      max-width: 600px;
+      margin: auto;
+      background-color: rgba(255,255,255,0.8);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .button {
+        padding: 10px;
+        width: 90%;
+        margin: 10px auto;
+      }
+
+      input, textarea {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📬 Reloop Postbox</h1>
+  <div id="menu">
+    <button class="button" onclick="showWriteForm()">✏️ Write a Letter</button>
+    <button class="button" onclick="viewLetters()">📖 View Letters</button>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+    const reloopPostbox = [];
+
+    function showWriteForm() {
+      document.getElementById("content").innerHTML = `
+        <h2>💌 Write to Mother Earth</h2>
+        <input type="text" id="name" placeholder="Your Name" />
+        <input type="text" id="title" placeholder="Letter Title" />
+        <textarea id="message" rows="5" placeholder="Your Message..."></textarea>
+        <button class="button" onclick="postLetter()">📮 Post Letter</button>
+      `;
+    }
+
+    function postLetter() {
+      const name = document.getElementById("name").value.trim();
+      const title = document.getElementById("title").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!name || !title || !message) {
+        alert("⚠️ Please fill in all fields.");
+        return;
+      }
+
+      const letter = { from: name, title: title, message: message };
+      reloopPostbox.push(letter);
+
+      alert("✅ Your letter has been posted!");
+      document.getElementById("content").innerHTML = '';
+    }
+
+    function viewLetters() {
+      let output = `<h2>📚 Letters to Mother Earth</h2>`;
+
+      if (reloopPostbox.length === 0) {
+        output += `<p>📭 No letters yet. Be the first!</p>`;
+      } else {
+        reloopPostbox.forEach((letter, index) => {
+          output += `
+            <div class="letter">
+              <strong>${index + 1}. "${letter.title}"</strong><br />
+              <em>by ${letter.from}</em>
+              <p>📝 ${letter.message}</p>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById("content").innerHTML = output;
+    }
+  </script>
+
+</body>
+</html>

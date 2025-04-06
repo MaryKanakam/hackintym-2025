@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Heroes Leaderboard</title>
+  <style>
+    @import url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff88;
+      text-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88;
+    }
+
+    .hero-card {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      margin: 1rem auto;
+      max-width: 600px;
+      box-shadow: 0 0 15px #00ffaa;
+      border: 4px solid #00ffaa;
+    }
+
+    .hero-name {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #ffdd57;
+      text-shadow: 1px 1px #000;
+    }
+
+    .hero-title {
+      font-size: 0.8rem;
+      color: #ffffff;
+    }
+
+    .impact-animation {
+      font-weight: bold;
+      color: #ff4444;
+      display: inline-block;
+      text-shadow: 0 0 6px #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 Local Heroes Leaderboard</h1>
+
+  <div id="leaderboard"></div>
+
+  <script>
+    const localHeroes = [
+      { name: "Ilakiya", title: "Top Recycler of the Week – Chennai", region: "Chennai" },
+      { name: "Ravi", title: "Biggest Impact Seller", region: "Coimbatore" },
+      { name: "Aarav", title: "Most Active Volunteer – Madurai", region: "Madurai" }
+    ];
+
+    const leaderboard = document.getElementById('leaderboard');
+    const frames = ["↗", "↑", "↖", "←", "↙", "↓", "↘", "→"];
+
+    localHeroes.forEach(hero => {
+      const card = document.createElement('div');
+      card.className = 'hero-card';
+
+      const name = document.createElement('div');
+      name.className = 'hero-name';
+      name.textContent = `👤 ${hero.name}`;
+
+      const title = document.createElement('div');
+      title.className = 'hero-title';
+
+      if (hero.title.includes("Impact Seller")) {
+        const anim = document.createElement('span');
+        anim.className = 'impact-animation';
+        let index = 0;
+
+        setInterval(() => {
+          anim.textContent = `🔥 ${frames[index % frames.length]} ${hero.title} ${frames[index % frames.length]} 🔥`;
+          index++;
+        }, 200);
+
+        title.appendChild(anim);
+      } else {
+        title.innerHTML = `🏅 ${hero.title}`;
+      }
+
+      card.appendChild(name);
+      card.appendChild(title);
+      leaderboard.appendChild(card);
+    });
+  </script>
+</body>
+</html>

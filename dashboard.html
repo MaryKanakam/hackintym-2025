@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard – RELOOP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="minecraft-bg">
+  <div class="container">
+    <h1 class="pixel-font">👤 Welcome, RELOOPer!</h1>
+    <p class="pixel-font">This is your personal dashboard. View your eco-actions and manage your profile.</p>
+
+    <ul class="pixel-font">
+      <li><a href="buy.html" class="btn">🛒 Browse Items</a></li>
+      <li><a href="sell.html" class="btn">💰 List Items</a></li>
+      <li><a href="trash-stories.html" class="btn">🗑️ Your Trash Stories</a></li>
+      <li><a href="feedback.html" class="btn">💌 Send Feedback</a></li>
+      <li><a href="home.html" class="btn">🏡 Back to Main Menu</a></li>
+    </ul>
+
+    <button class="btn" onclick="logoutUser()">🔐 Logout</button>
+  </div>
+
+  <script>
+    function logoutUser() {
+      alert("Logged out successfully!");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eco Marketplace</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5fff5;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2e7d32;
+    }
+    .marketplace-item, .message, .order {
+      border: 1px solid #c8e6c9;
+      background: #e8f5e9;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 12px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    input, textarea {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌿 Eco Marketplace</h1>
+  <div id="main-menu">
+    <button onclick="showMarketplace()">View Items & Contact Seller</button>
+    <button onclick="placeOrder()">Place an Order</button>
+    <button onclick="showSellerDashboard()">Enter Seller Dashboard</button>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+    const userProfile = { name: "Ilakiya" };
+
+    const marketplace = [
+      { item: "Upcycled Glass Jar", price: 20, seller: "Ravi", desc: "Perfect for DIY vases." },
+      { item: "Cardboard Sheet Pack", price: 10, seller: "Asha", desc: "Great for crafts or box making." },
+      { item: "Wool Scraps", price: 15, seller: "Meena", desc: "Good for eco-friendly stuffing." }
+    ];
+
+    const sellerMessages = { Ravi: [], Asha: [], Meena: [] };
+    const ordersReceived = { Ravi: [], Asha: [], Meena: [] };
+    const deliveredOrders = { Ravi: [], Asha: [], Meena: [] };
+
+    const content = document.getElementById("content");
+
+    function showMarketplace() {
+      content.innerHTML = `<h2>🛍️ Marketplace</h2>`;
+      marketplace.forEach((p, i) => {
+        content.innerHTML += `
+          <div class="marketplace-item">
+            <strong>${p.item}</strong> - ₹${p.price} <br>
+            Seller: ${p.seller}<br>
+            <i>${p.desc}</i><br>
+            <textarea id="msg-${i}" placeholder="Type a message to ${p.seller}"></textarea>
+            <button onclick="sendMessage(${i})">Send Message</button>
+          </div>
+        `;
+      });
+    }
+
+    function sendMessage(index) {
+      const product = marketplace[index];
+      const msg = document.getElementById(`msg-${index}`).value;
+      if (msg.trim()) {
+        sellerMessages[product.seller].push({
+          from: userProfile.name,
+          message: msg,
+          item: product.item
+        });
+        alert("✅ Message sent!");
+        showMarketplace();
+      } else {
+        alert("⚠️ Please type a message.");
+      }
+    }
+
+    function placeOrder() {
+      content.innerHTML = `<h2>🛒 Place Order</h2>`;
+      marketplace.forEach((p, i) => {
+        content.innerHTML += `
+          <div class="marketplace-item">
+            <strong>${p.item}</strong> - ₹${p.price}<br>
+            Seller: ${p.seller}<br>
+            <i>${p.desc}</i><br>
+            <button onclick="confirmOrder(${i})">Order</button>
+          </div>
+        `;
+      });
+    }
+
+    function confirmOrder(index) {
+      const p = marketplace[index];
+      ordersReceived[p.seller].push({
+        buyer: userProfile.name,
+        item: p.item,
+        price: p.price
+      });
+      alert(`✅ Order placed for ${p.item} from ${p.seller}`);
+    }
+
+    function showSellerDashboard() {
+      const seller = prompt("Enter your seller name (Ravi, Asha, Meena):");
+      if (!sellerMessages[seller]) {
+        alert("⚠️ Seller not found.");
+        return;
+      }
+
+      content.innerHTML = `<h2>🏪 ${seller}'s Dashboard</h2>
+        <button onclick="viewMessages('${seller}')">View Buyer Messages</button>
+        <button onclick="viewOrders('${seller}')">View Orders Received</button>
+        <button onclick="markDelivered('${seller}')">Mark Orders as Delivered</button>
+        <button onclick="viewDelivered('${seller}')">View Delivered Orders</button>
+      `;
+    }
+
+    function viewMessages(seller) {
+      const messages = sellerMessages[seller];
+      content.innerHTML = `<h2>📥 Messages for ${seller}</h2>`;
+      if (!messages.length) {
+        content.innerHTML += `<p>No messages yet.</p>`;
+        return;
+      }
+      messages.forEach((m, i) => {
+        content.innerHTML += `
+          <div class="message">${i + 1}. From ${m.from} about "${m.item}": ${m.message}</div>
+        `;
+      });
+    }
+
+    function viewOrders(seller) {
+      const orders = ordersReceived[seller];
+      content.innerHTML = `<h2>📦 Orders for ${seller}</h2>`;
+      if (!orders.length) {
+        content.innerHTML += `<p>No orders yet.</p>`;
+        return;
+      }
+      orders.forEach((o, i) => {
+        content.innerHTML += `
+          <div class="order">${i + 1}. ${o.item} - ₹${o.price} (from ${o.buyer})</div>
+        `;
+      });
+    }
+
+    function markDelivered(seller) {
+      const orders = ordersReceived[seller];
+      if (!orders.length) {
+        alert("No orders to deliver.");
+        return;
+      }
+      let options = "Select an order number to mark as delivered:\n";
+      orders.forEach((o, i) => {
+        options += `${i + 1}. ${o.item} by ${o.buyer}\n`;
+      });
+      const choice = prompt(options);
+      const idx = parseInt(choice) - 1;
+      if (idx >= 0 && idx < orders.length) {
+        deliveredOrders[seller].push(orders.splice(idx, 1)[0]);
+        alert("✅ Order marked as delivered.");
+      } else {
+        alert("⚠️ Invalid selection.");
+      }
+    }
+
+    function viewDelivered(seller) {
+      const delivered = deliveredOrders[seller];
+      content.innerHTML = `<h2>📬 Delivered Orders by ${seller}</h2>`;
+      if (!delivered.length) {
+        content.innerHTML += `<p>No deliveries yet.</p>`;
+        return;
+      }
+      delivered.forEach((o, i) => {
+        content.innerHTML += `<div class="order">${i + 1}. ${o.item} to ${o.buyer} - ₹${o.price}</div>`;
+      });
+    }
+  </script>
+
+</body>
+</html>

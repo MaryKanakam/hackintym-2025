@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>♻️ Eco Item Exchange Marketplace</title>
+  <link href="https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-image: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA'); /* Minecraft grass background */
+      background-size: cover;
+      color: #2e4d2e;
+      padding: 20px;
+      image-rendering: pixelated;
+    }
+
+    h1 {
+      color: #5dbe4c;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border: 3px solid #4a9642;
+      box-shadow: 0 0 10px #75d663;
+      text-align: center;
+    }
+
+    .section {
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 4px double #8ccf7b;
+      border-radius: 8px;
+      margin-top: 30px;
+      padding: 20px;
+      box-shadow: 4px 4px 0px #4e7f4f;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background-color: #74c34d;
+      color: white;
+      border: 2px solid #3e742f;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background-color: #67b043;
+    }
+
+    input, select {
+      font-family: inherit;
+      padding: 10px;
+      margin-top: 8px;
+      width: 100%;
+      max-width: 400px;
+      background-color: #e3ffe3;
+      border: 2px solid #6ea76c;
+      color: #2e4d2e;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌿 Eco Item Exchange</h1>
+
+  <div class="section">
+    <h3>🎒 Your Items:</h3>
+    <ul id="inventoryList"></ul>
+    <p><em id="noItems"></em></p>
+  </div>
+
+  <div class="section">
+    <h3>🛠️ Offer a Trade</h3>
+    <label for="giveItem">Give:</label><br>
+    <select id="giveItem"></select><br><br>
+    <label for="wantItem">Want:</label><br>
+    <input type="text" id="wantItem" placeholder="e.g. redstone dust"><br>
+    <button onclick="offerTrade()">Submit Trade</button>
+  <a href="home.html" class="btn">⬅️ Back to Home</a>
+
+    <p id="offerMsg"></p>
+  </div>
+
+  <div class="section">
+    <h3>📦 Available Trade Offers</h3>
+    <ul id="tradeList"></ul>
+    <p id="tradeMsg"></p>
+  </div>
+
+<script>
+  const userProfile = {
+    name: "Ilakiya",
+    items: ["glass jar", "old magazine", "twine"],
+    tradesDone: 0
+  };
+
+  const tradeOffers = [
+    { giver: "Ravi", gives: "egg cartons", wants: "glass jar" },
+    { giver: "Anya", gives: "bottle caps", wants: "twine" }
+  ];
+
+  function updateInventoryUI() {
+    const inventoryList = document.getElementById("inventoryList");
+    const giveSelect = document.getElementById("giveItem");
+    const noItems = document.getElementById("noItems");
+    inventoryList.innerHTML = "";
+    giveSelect.innerHTML = "";
+
+    if (userProfile.items.length === 0) {
+      noItems.innerText = "You have no items yet.";
+    } else {
+      noItems.innerText = "";
+      userProfile.items.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = "🧱 " + item;
+        inventoryList.appendChild(li);
+
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        giveSelect.appendChild(option);
+      });
+    }
+  }
+
+  function offerTrade() {
+    const give = document.getElementById("giveItem").value;
+    const want = document.getElementById("wantItem").value.trim().toLowerCase();
+    const offerMsg = document.getElementById("offerMsg");
+
+    if (!want) {
+      offerMsg.innerHTML = `<span class="error">❌ Please enter what you want in return.</span>`;
+      return;
+    }
+
+    tradeOffers.push({ giver: userProfile.name, gives: give, wants: want });
+    userProfile.items = userProfile.items.filter(item => item !== give);
+    updateInventoryUI();
+    updateTradeList();
+
+    document.getElementById("wantItem").value = "";
+    offerMsg.innerHTML = `✅ Trade offered: You give "${give}" and want "${want}".`;
+  }
+
+  function updateTradeList() {
+    const tradeList = document.getElementById("tradeList");
+    const tradeMsg = document.getElementById("tradeMsg");
+    tradeList.innerHTML = "";
+
+    if (tradeOffers.length === 0) {
+      tradeMsg.textContent = "📭 No trade offers right now.";
+      return;
+    }
+
+    tradeMsg.textContent = "";
+
+    tradeOffers.forEach((t, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = `🔁 ${t.giver} offers <strong>${t.gives}</strong> for <strong>${t.wants}</strong>
+        <button onclick="acceptTrade(${index})">Accept</button>`;
+      tradeList.appendChild(li);
+    });
+  }
+
+  function acceptTrade(index) {
+    const selected = tradeOffers[index];
+    const tradeMsg = document.getElementById("tradeMsg");
+
+    if (!userProfile.items.includes(selected.wants)) {
+      tradeMsg.innerHTML = `<span class="error">❌ You don’t have "${selected.wants}".</span>`;
+      return;
+    }
+
+    userProfile.items = userProfile.items.filter(item => item !== selected.wants);
+    userProfile.items.push(selected.gives);
+    userProfile.tradesDone += 1;
+    tradeOffers.splice(index, 1);
+
+    updateInventoryUI();
+    updateTradeList();
+
+    tradeMsg.innerHTML = `<span class="success">🎉 You traded "${selected.wants}" and got "${selected.gives}". Total trades: ${userProfile.tradesDone}</span>`;
+  }
+
+  updateInventoryUI();
+  updateTradeList();
+</script>
+
+</body>
+</html>

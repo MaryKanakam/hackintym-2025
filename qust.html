@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ReLoop Eco Missions</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      color: #333;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #2e8b57;
+    }
+    .mission, .side-quest {
+      border: 1px solid #cfc;
+      border-left: 6px solid #2e8b57;
+      padding: 10px;
+      margin: 10px 0;
+      background: #fff;
+    }
+    .btn {
+      background: #2e8b57;
+      color: #fff;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #246b45;
+    }
+    .completed {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌱 Welcome, Ilakiya!</h1>
+  <p>Points: <span id="points">0</span></p>
+  <h2>📜 Your Active Eco Missions</h2>
+  <div id="missions"></div>
+
+  <h2>⚙️ Perform Eco Action</h2>
+  <button class="btn" onclick="performAction('recycled')">♻️ Recycled</button>
+  <button class="btn" onclick="performAction('shared')">📣 Shared</button>
+  <button class="btn" onclick="performAction('donated')">🧺 Donated</button>
+  <button class="btn" onclick="performAction('repurposed')">🔨 Repurposed</button>
+
+  <div id="sideQuest" class="side-quest" style="display: none;"></div>
+
+  <script>
+    const profile = {
+      name: "Ilakiya",
+      points: 0,
+      completed: {},
+      progress: {}
+    };
+
+    const missions = {
+      daily: [
+        { title: "Recycle 1 item", action: "recycled", target: 1, reward: 10 },
+        { title: "Share a sustainability tip", action: "shared", target: 1, reward: 5 }
+      ],
+      weekly: [
+        { title: "Donate 3 items", action: "donated", target: 3, reward: 30 },
+        { title: "Repurpose 2 items", action: "repurposed", target: 2, reward: 25 }
+      ]
+    };
+
+    const sideQuests = [
+      { title: "Tell a friend about Reloop", reward: 5 },
+      { title: "Plant a seed 🌱", reward: 8 },
+      { title: "Upcycle something weird 🛠️", reward: 12 }
+    ];
+
+    function init() {
+      for (const type in missions) {
+        missions[type].forEach(m => {
+          if (!(m.title in profile.progress)) profile.progress[m.title] = 0;
+        });
+      }
+      renderMissions();
+    }
+
+    function renderMissions() {
+      const container = document.getElementById("missions");
+      container.innerHTML = "";
+      for (const type in missions) {
+        const heading = document.createElement("h3");
+        heading.textContent = type.charAt(0).toUpperCase() + type.slice(1) + " Missions:";
+        container.appendChild(heading);
+
+        missions[type].forEach(m => {
+          const div = document.createElement("div");
+          div.className = "mission";
+          const done = profile.completed[m.title] ? "✅" : "⏳";
+          div.innerHTML = `
+            ${done} <strong>${m.title}</strong> 
+            → ${profile.progress[m.title]}/${m.target}
+          `;
+          container.appendChild(div);
+        });
+      }
+      document.getElementById("points").textContent = profile.points;
+    }
+
+    function performAction(action) {
+      const ecoPoints = {
+        recycled: 10,
+        shared: 5,
+        donated: 15,
+        repurposed: 20
+      };
+
+      profile.points += ecoPoints[action];
+
+      for (const type in missions) {
+        missions[type].forEach(m => {
+          if (m.action === action && !profile.completed[m.title]) {
+            profile.progress[m.title]++;
+            if (profile.progress[m.title] >= m.target) {
+              profile.points += m.reward;
+              profile.completed[m.title] = true;
+              alert(`🎉 Mission Complete: ${m.title}\n🎁 +${m.reward} points!`);
+              giveSideQuest();
+            }
+          }
+        });
+      }
+
+      renderMissions();
+    }
+
+    function giveSideQuest() {
+      const quest = sideQuests[Math.floor(Math.random() * sideQuests.length)];
+      const div = document.getElementById("sideQuest");
+      div.style.display = "block";
+      div.innerHTML = `
+        💡 <strong>Side Quest Unlocked:</strong> ${quest.title}<br>
+        Reward: 🎁 ${quest.reward} points<br>
+        <button class="btn" onclick="completeSideQuest(${quest.reward})">Complete</button>
+  <a href="home.html" class="btn">⬅️ Back to Home</a>
+
+      `;
+    }
+
+    function completeSideQuest(reward) {
+      profile.points += reward;
+      alert(`🎊 Nice! You got ${reward} extra points.`);
+      document.getElementById("sideQuest").style.display = "none";
+      renderMissions();
+    }
+
+    init();
+  </script>
+
+</body>
+</html>

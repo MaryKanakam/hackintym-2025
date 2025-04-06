@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🟩 Eco Marketplace - Minecraft Edition</title>
+  <link href="https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') repeat;
+      color: #333;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 10px;
+      border: 4px double #3eaf47;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    .section {
+      background-color: rgba(255, 255, 255, 0.92);
+      border: 4px solid #3eaf47;
+      box-shadow: 0 0 4px #222;
+      padding: 20px;
+      margin-top: 30px;
+      font-size: 10px;
+    }
+
+    .item {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #d0ffd9;
+      border-left: 6px solid #2ecc71;
+      font-size: 10px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      margin-top: 8px;
+      padding: 8px;
+      background: #f8fff9;
+      border: 2px solid #3eaf47;
+    }
+
+    button {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      background-color: #3eaf47;
+      border: 2px solid #1b5e20;
+      color: white;
+      padding: 10px 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2b8b37;
+    }
+
+    .message-box {
+      background: #ddfbe4;
+      padding: 10px;
+      margin-top: 10px;
+      border: 2px dashed #2ecc71;
+      font-size: 10px;
+    }
+
+    .message {
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌱 ECO MARKETPLACE - MINECRAFT EDITION</h1>
+
+<div class="section">
+  <h3>📦 Marketplace Listings</h3>
+  <div id="marketplaceList"></div>
+
+  <label for="itemSelect">🎯 Select Item to Contact Seller:</label>
+  <select id="itemSelect"></select>
+
+  <label for="messageText">📨 Type your message:</label>
+  <textarea id="messageText" rows="3"></textarea>
+
+  <button onclick="sendMessage()">📤 Send Message</button>
+  <div id="confirmation" class="message-box"></div>
+</div>
+
+<div class="section">
+  <h3>📥 Seller's Message Box</h3>
+  <input type="text" id="sellerNameInput" placeholder="🔍 Enter seller name">
+  <button onclick="viewMessages()">🔓 View Messages</button>
+  <div id="sellerMessages" class="message-box"></div>
+</div>
+
+<script>
+  const userProfile = { name: "Ilakiya" };
+
+  const marketplace = [
+    { item: "🪟 Upcycled Glass Jar", price: 20, seller: "Ravi", desc: "Perfect for DIY vases." },
+    { item: "📦 Cardboard Sheet Pack", price: 10, seller: "Asha", desc: "Great for crafts or box making." },
+    { item: "🧶 Wool Scraps", price: 15, seller: "Meena", desc: "Good for eco-friendly stuffing." },
+  ];
+
+  const sellerMessages = {
+    "Ravi": [],
+    "Asha": [],
+    "Meena": []
+  };
+
+  function populateMarketplace() {
+    const list = document.getElementById("marketplaceList");
+    const select = document.getElementById("itemSelect");
+    list.innerHTML = "";
+    select.innerHTML = "";
+
+    marketplace.forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `<strong>${idx + 1}. ${p.item}</strong> - ₹${p.price}<br>
+                      Seller: <em>${p.seller}</em><br>
+                      🔎 ${p.desc}`;
+      list.appendChild(div);
+
+      const option = document.createElement("option");
+      option.value = idx;
+      option.text = `${p.item} (by ${p.seller})`;
+      select.appendChild(option);
+    });
+  }
+
+  function sendMessage() {
+    const idx = document.getElementById("itemSelect").value;
+    const msg = document.getElementById("messageText").value.trim();
+    const confirmation = document.getElementById("confirmation");
+
+    if (!msg) {
+      confirmation.innerHTML = "⚠️ Please type a message.";
+      return;
+    }
+
+    const product = marketplace[idx];
+    const seller = product.seller;
+
+    sellerMessages[seller].push({
+      from: userProfile.name,
+      message: msg,
+      item: product.item
+    });
+
+    confirmation.innerHTML = `✅ Message sent to ${seller} about "${product.item}"!`;
+    document.getElementById("messageText").value = "";
+  }
+
+  function viewMessages() {
+    const sellerName = document.getElementById("sellerNameInput").value.trim();
+    const box = document.getElementById("sellerMessages");
+
+    if (!sellerMessages[sellerName]) {
+      box.innerHTML = "⚠️ Seller not found.";
+      return;
+    }
+
+    const msgs = sellerMessages[sellerName];
+    if (msgs.length === 0) {
+      box.innerHTML = "📭 No messages yet.";
+    } else {
+      let html = "";
+      msgs.forEach((m, i) => {
+        html += `<div class="message">💬 <strong>${m.from}</strong> about "${m.item}": ${m.message}</div>`;
+      });
+      box.innerHTML = html;
+    }
+  }
+
+  populateMarketplace();
+</script>
+
+</body>
+</html>

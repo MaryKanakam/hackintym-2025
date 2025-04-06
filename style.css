@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Main background setup */
+body.minecraft-bg {
+  background-image: url('https://cdn.wallpapersafari.com/52/64/oJq1SiK.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+  min-height: 100vh;
+}
+
+/* Light mode */
+body.light-mode {
+  background-color: #eaeaea;
+  background-image: none;
+  color: #222;
+}
+
+/* Container box */
+.container {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  margin: 40px auto;
+  border: 5px solid #00ff00;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00ff00;
+}
+
+body.light-mode .container {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 5px solid #007700;
+  box-shadow: 0 0 10px #007700;
+}
+
+/* Headings */
+h1, h2, h3 {
+  font-size: 20px;
+  text-align: center;
+  color: #00ff00;
+  margin-bottom: 30px;
+}
+
+body.light-mode h1, 
+body.light-mode h2,
+body.light-mode h3 {
+  color: #007700;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background-color: #00aa00;
+  color: #fff;
+  border: 3px solid #004400;
+  padding: 10px 20px;
+  margin: 10px 5px;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 #004400;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #00ff00;
+  color: black;
+  box-shadow: 3px 3px 5px #002200;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+body.light-mode .btn {
+  background-color: #66cc66;
+  color: #000;
+  border-color: #006600;
+  box-shadow: 3px 3px 0 #006600;
+}
+
+/* Inputs & forms */
+input, textarea, select {
+  font-family: 'Press Start 2P', cursive;
+  background-color: #222;
+  border: 2px solid #00ff00;
+  color: #fff;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+  border-radius: 6px;
+}
+
+body.light-mode input,
+body.light-mode textarea,
+body.light-mode select {
+  background-color: #fff;
+  border: 2px solid #007700;
+  color: #000;
+}
+
+/* Toggle container */
+.toggle-container {
+  text-align: right;
+  margin: 10px 20px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #00aa00;
+}
+
+input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+/* Snackbar */
+.snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #00aa00;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  padding: 14px;
+  position: fixed;
+  z-index: 1;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.snackbar.show {
+  visibility: visible;
+  animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+
+@keyframes fadein {
+  from { bottom: 0; opacity: 0; }
+  to { bottom: 30px; opacity: 1; }
+}
+
+@keyframes fadeout {
+  from { bottom: 30px; opacity: 1; }
+  to { bottom: 0; opacity: 0; }
+}
+
+/* List styles */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+}

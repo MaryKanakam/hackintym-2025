@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reloop Badge System</title>
+  <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: 'Minecraftia', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .profile-card {
+      background-color: rgba(20, 20, 20, 0.9);
+      border: 4px solid #00ff88;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ff88;
+    }
+
+    .badge {
+      font-size: 3rem;
+      margin: 1rem 0;
+      filter: drop-shadow(0 0 5px lime);
+    }
+
+    .badge-name {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar {
+      background-color: #222;
+      border: 2px solid #00ff88;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 20px;
+      margin-top: 10px;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #00ff88, #007744);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .input-area {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 0.4rem;
+      font-size: 1rem;
+      font-family: 'Minecraftia', sans-serif;
+      background-color: #111;
+      color: lime;
+      border: 2px solid #00ff88;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-family: 'Minecraftia', sans-serif;
+      background-color: #00ff88;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #00cc77;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <h2>🌍 User Profile</h2>
+    <div class="badge" id="badgeIcon">🪨</div>
+    <div class="badge-name" id="badgeName">Gravel</div>
+    <p>Exchanges Completed: <span id="exchangeCount">0</span></p>
+    <div class="progress-bar">
+      <div class="progress" id="progressBar"></div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <label for="exchanges">Add:</label>
+    <input type="number" id="exchanges" min="1" max="100" />
+    <button onclick="addExchanges()">Update</button>
+  </div>
+
+  <script>
+    const badges = [
+      { name: "Gravel", icon: "🪨", min: 0, max: 4 },
+      { name: "Wood", icon: "🪵", min: 5, max: 9 },
+      { name: "Iron", icon: "🔩", min: 10, max: 14 },
+      { name: "Diamond", icon: "💎", min: 15, max: 19 },
+      { name: "Emerald", icon: "💚", min: 20, max: 24 },
+      { name: "Netherite", icon: "🔥", min: 25, max: Infinity }
+    ];
+
+    let exchanges = 0;
+
+    function updateBadge() {
+      const exchangeCountEl = document.getElementById("exchangeCount");
+      const badgeIconEl = document.getElementById("badgeIcon");
+      const badgeNameEl = document.getElementById("badgeName");
+      const progressEl = document.getElementById("progressBar");
+
+      exchangeCountEl.innerText = exchanges;
+
+      const currentBadge = badges.find(b => exchanges >= b.min && exchanges <= b.max);
+      badgeIconEl.innerText = currentBadge.icon;
+      badgeNameEl.innerText = currentBadge.name;
+
+      const nextLevel = badges.find(b => b.min > exchanges);
+      const currentRange = currentBadge.max - currentBadge.min + 1;
+      const progressInLevel = exchanges - currentBadge.min;
+      const progressPercent = nextLevel
+        ? (progressInLevel / currentRange) * 100
+        : 100;
+
+      progressEl.style.width = `${progressPercent}%`;
+    }
+
+    function addExchanges() {
+      const input = document.getElementById("exchanges");
+      const value = parseInt(input.value);
+      if (!isNaN(value) && value > 0) {
+        exchanges += value;
+        updateBadge();
+        input.value = "";
+      }
+    }
+
+    updateBadge();
+  </script>
+
+</body>
+</html>

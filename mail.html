@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📬 Seller Dashboard – Minecraft Edition</title>
+  <link href="https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-image: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      color: #2e7d32;
+      padding: 20px;
+      margin: 0;
+      text-shadow: 1px 1px #000;
+    }
+
+    h1, h2, h3 {
+      color: #dcedc8;
+      text-align: center;
+    }
+
+    .button {
+      background-color: #4caf50;
+      color: white;
+      padding: 12px 16px;
+      margin: 8px 4px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    .button:hover {
+      background-color: #2e7d32;
+    }
+
+    input {
+      font-family: 'Press Start 2P', cursive;
+      padding: 10px;
+      margin: 10px auto;
+      border-radius: 6px;
+      border: 2px solid #a5d6a7;
+      width: 90%;
+      max-width: 400px;
+      display: block;
+      background-color: #f1f8e9;
+      font-size: 10px;
+    }
+
+    .order, .summary {
+      background-color: rgba(232, 245, 233, 0.9);
+      border: 2px dashed #81c784;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 10px 0;
+      font-size: 10px;
+    }
+
+    #dashboard, #output {
+      max-width: 600px;
+      margin: auto;
+      background-color: rgba(255,255,255,0.85);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧱 Seller Dashboard</h1>
+  <input id="sellerInput" type="text" placeholder="Enter seller name (e.g., Ravi)">
+  <button class="button" onclick="loadDashboard()">Enter Dashboard</button>
+
+  <div id="dashboard"></div>
+
+  <script>
+    const ordersReceived = {
+      "Ravi": [
+        { buyer: "Ilakiya", item: "Upcycled Jar", price: 20, timestamp: new Date() },
+        { buyer: "Arun", item: "Eco Lamp", price: 50, timestamp: new Date(Date.now() - 1 * 86400000) },
+        { buyer: "Meena", item: "Plant Pot", price: 30, timestamp: new Date(Date.now() - 4 * 86400000) },
+        { buyer: "Dev", item: "Glass Art", price: 40, timestamp: new Date(Date.now() - 10 * 86400000) }
+      ]
+    };
+
+    let currentSeller = "";
+
+    function loadDashboard() {
+      const seller = document.getElementById("sellerInput").value.trim();
+      if (!ordersReceived[seller]) {
+        alert("⚠️ Seller not found.");
+        return;
+      }
+      currentSeller = seller;
+
+      document.getElementById("dashboard").innerHTML = `
+        <h2>👤 Welcome, ${seller}</h2>
+        <button class="button" onclick="viewOrders()">📦 View Orders</button>
+        <button class="button" onclick="viewRevenue()">💰 Revenue</button>
+        <button class="button" onclick="document.getElementById('dashboard').innerHTML = ''">🚪 Exit</button>
+        <div id="output"></div>
+      `;
+    }
+
+    function viewOrders() {
+      const orders = ordersReceived[currentSeller];
+      let output = `<h3>📥 Order Mails</h3>`;
+      orders.forEach((o, i) => {
+        const timeStr = o.timestamp.toLocaleString();
+        output += `
+          <div class="order">
+            ${i + 1}. ${o.item} - ₹${o.price}<br>
+            From: ${o.buyer}<br>
+            📅 ${timeStr}
+          </div>
+        `;
+      });
+      document.getElementById("output").innerHTML = output;
+    }
+
+    function viewRevenue() {
+      const now = new Date();
+      const today = now.toDateString();
+      const weekAgo = new Date(now.getTime() - 7 * 86400000);
+      const monthAgo = new Date(now.getTime() - 30 * 86400000);
+
+      let todayTotal = 0, weekTotal = 0, monthTotal = 0;
+
+      ordersReceived[currentSeller].forEach(order => {
+        const orderDate = order.timestamp;
+        if (orderDate.toDateString() === today) todayTotal += order.price;
+        if (orderDate >= weekAgo) weekTotal += order.price;
+        if (orderDate >= monthAgo) monthTotal += order.price;
+      });
+
+      document.getElementById("output").innerHTML = `
+        <h3>📊 Revenue Summary</h3>
+        <div class="summary">🗓️ Today: ₹${todayTotal}</div>
+        <div class="summary">📅 This Week: ₹${weekTotal}</div>
+        <div class="summary">🗓️ This Month: ₹${monthTotal}</div>
+      `;
+    }<a href="home.html" class="btn"> go back</a>
+
+  </script>
+
+</body>
+</html>

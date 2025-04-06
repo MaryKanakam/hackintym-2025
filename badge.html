@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eco Points Tracker 🌿</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') no-repeat center center fixed;
+      background-size: cover;
+      padding: 30px;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      background: rgba(34, 34, 34, 0.9);
+      padding: 30px;
+      border-radius: 16px;
+      border: 6px solid #00ff88;
+      box-shadow: 0 0 25px #00ff88;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff88;
+      font-size: 1.2rem;
+      text-shadow: 2px 2px #000;
+    }
+
+    .profile, .actions {
+      margin-top: 20px;
+    }
+
+    .badges span {
+      margin-right: 8px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      background-color: #55ff55;
+      color: black;
+      border: 2px solid #3e8e41;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+    }
+
+    button:hover {
+      background-color: #00cc00;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      border-radius: 4px;
+      border: 2px solid #aaa;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+    }
+
+    .wow {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 1px 1px #000;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🌱 Eco Points Tracker</h1>
+
+  <div class="profile">
+    <p><strong>👤 Name:</strong> <span id="name">Ilakiya</span></p>
+    <p><strong>🌟 Total Points:</strong> <span id="points">120</span></p>
+    <p><strong>🏅 Badges Earned:</strong> <span id="badges">🍃 Eco Starter, 🌿 Eco Hero</span></p>
+    <p><strong>🪵 Materials Received:</strong></p>
+    <ul id="materials">
+      <li>Scrap Wood from Reloop</li>
+      <li>Used Fabric from Local NGO</li>
+    </ul>
+  </div>
+
+  <div class="actions">
+    <h3>Take an Eco Action:</h3>
+    <button onclick="doAction('recycled')">♻️ Recycled</button>
+    <button onclick="doAction('donated')">🧺 Donated</button>
+    <button onclick="doAction('repurposed')">🔨 Repurposed</button>
+    <button onclick="doAction('shared')">📦 Shared</button>
+  </div>
+
+  <div class="add-material">
+    <h3>Add Material You Got:</h3>
+    <input type="text" id="newMaterial" placeholder="e.g. Reused Plastic from Reloop">
+    <button onclick="addMaterial()">Add Material</button>
+  </div>
+
+  <div class="wow" id="wowMessage"></div>
+</div>
+
+<script>
+  const userProfile = {
+    name: "Ilakiya",
+    points: 120,
+    badges: ["🍃 Eco Starter", "🌿 Eco Hero"],
+    materials: ["Scrap Wood from Reloop", "Used Fabric from Local NGO"]
+  };
+
+  const ecoActions = {
+    recycled: 10,
+    donated: 15,
+    repurposed: 20,
+    shared: 5
+  };
+
+  function renderProfile() {
+    document.getElementById("name").textContent = userProfile.name;
+    document.getElementById("points").textContent = userProfile.points;
+    document.getElementById("badges").textContent = userProfile.badges.join(", ");
+
+    const matList = document.getElementById("materials");
+    matList.innerHTML = "";
+    userProfile.materials.forEach(m => {
+      const li = document.createElement("li");
+      li.textContent = m;
+      matList.appendChild(li);
+    });
+  }
+
+  function doAction(action) {
+    if (ecoActions[action]) {
+      const pointsEarned = ecoActions[action];
+      userProfile.points += pointsEarned;
+      alert(`✅ You earned ${pointsEarned} points for ${action}!`);
+      checkBadges();
+      wowEffect();
+      renderProfile();
+    } else {
+      alert("⚠️ Invalid action.");
+    }
+  }
+
+  function checkBadges() {
+    const p = userProfile.points;
+    const b = userProfile.badges;
+
+    if (p >= 50 && !b.includes("🍃 Eco Starter")) {
+      b.push("🍃 Eco Starter");
+      alert("🎉 Badge Unlocked: 🍃 Eco Starter!");
+    }
+    if (p >= 100 && !b.includes("🌿 Eco Hero")) {
+      b.push("🌿 Eco Hero");
+      alert("🎉 Badge Unlocked: 🌿 Eco Hero!");
+    }
+    if (p >= 200 && !b.includes("♻️ Eco Legend")) {
+      b.push("♻️ Eco Legend");
+      alert("🎉 Badge Unlocked: ♻️ Eco Legend!");
+    }
+  }
+
+  function wowEffect() {
+    const msg = document.getElementById("wowMessage");
+    if (userProfile.points % 50 === 0) {
+      msg.textContent = "💥 WOW! You're making serious impact!";
+    } else {
+      msg.textContent = "";
+    }
+  }
+
+  function addMaterial() {
+    const input = document.getElementById("newMaterial");
+    const value = input.value.trim();
+    if (value) {
+      userProfile.materials.push(value);
+      input.value = "";
+      renderProfile();
+      alert(`📦 Added: ${value}`);
+    }
+  }
+
+  renderProfile();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Material Matcher ♻️</title>
+  <style>
+    @import url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA');
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: url('https://imgs.search.brave.com/oZtgpovTs18AAimjXWf5SzfOMNSOpILemBJBydYnxm0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/d2FsbHBhcGVyc2Fm/YXJpLmNvbS81Mi82/NC9vSnExU2lLLndl/YnA') no-repeat center center fixed;
+      background-size: cover;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 25px;
+      border-radius: 16px;
+      border: 6px solid #55ff55;
+      box-shadow: 0 0 25px #00ff88;
+    }
+
+    h2 {
+      color: #55ff55;
+      text-shadow: 2px 2px #000;
+      font-size: 14px;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 2px solid #aaa;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #55ff55;
+      color: black;
+      border: 2px solid #3e8e41;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+    }
+
+    button:hover {
+      background-color: #00cc00;
+    }
+
+    .results {
+      margin-top: 20px;
+    }
+
+    .match {
+      background: rgba(0, 100, 0, 0.7);
+      border-left: 5px solid #00ff88;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+
+    .score {
+      font-weight: bold;
+      color: #aaffaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Smart Material Matcher</h2>
+    <p>Type what you're looking for (e.g. "plastic bottles", "bamboo sticks"):</p>
+    <input type="text" id="queryInput" placeholder="Enter material...">
+    <button onclick="findMatches()">Find Sellers</button>
+<a href="home.html" class="btn"> go back </a>
+
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    const sellers = [
+      { name: "Anu", location: "Chennai", materials: "plastic bottles, old newspapers, scrap metal" },
+      { name: "Ravi", location: "Chennai", materials: "glass jars, broken tiles, bamboo sticks" },
+      { name: "Meera", location: "Coimbatore", materials: "reusable cloth, wooden blocks, paper scraps" },
+      { name: "Ilakiya", location: "Chennai", materials: "bottles, wires, textbooks, fabric" },
+      { name: "Nisha", location: "Madurai", materials: "aluminum cans, newspapers, wool sweaters" },
+      { name: "Vikram", location: "Salem", materials: "metal rods, wire mesh, used wood planks" },
+      { name: "Sara", location: "Trichy", materials: "old books, mason jars, colorful fabrics" },
+      { name: "Arjun", location: "Tirunelveli", materials: "plastic crates, broken furniture, tile pieces" },
+      { name: "Divya", location: "Erode", materials: "textiles, sewing kits, pillow stuffing" },
+      { name: "Manoj", location: "Vellore", materials: "paper rolls, cardboard, egg trays" },
+      { name: "Lakshmi", location: "Coimbatore", materials: "rope, twine, recycled boxes" },
+      { name: "Karthik", location: "Chennai", materials: "old electronics, circuit boards, batteries" }
+    ];
+
+    function extractKeywords(text) {
+      return new Set(text.toLowerCase().match(/\b\w+\b/g));
+    }
+
+    function findMatches() {
+      const query = document.getElementById("queryInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (!query) {
+        resultsDiv.innerHTML = "<p>Please enter a material to search.</p>";
+        return;
+      }
+
+      const queryKeywords = extractKeywords(query);
+      const matches = [];
+
+      sellers.forEach(seller => {
+        const materialKeywords = extractKeywords(seller.materials);
+        const common = [...queryKeywords].filter(word => materialKeywords.has(word));
+        const score = common.length;
+
+        if (score > 0) {
+          matches.push({
+            ...seller,
+            score: score,
+            common: common
+          });
+        }
+      });
+
+      matches.sort((a, b) => b.score - a.score);
+
+      if (matches.length === 0) {
+        resultsDiv.innerHTML = "<p>😞 No matches found.</p>";
+        return;
+      }
+
+      matches.forEach(match => {
+        const div = document.createElement("div");
+        div.className = "match";
+        div.innerHTML = `
+          <p><strong>🧑 ${match.name}</strong> (${match.location})</p>
+          <p>🪵 Materials: ${match.materials}</p>
+          <p class="score">✅ Match Score: ${match.score} | Matched: ${match.common.join(', ')}</p>
+        `;
+        resultsDiv.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
